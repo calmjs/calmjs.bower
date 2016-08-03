@@ -25,6 +25,11 @@ setup(name='calmjs.bower',
       license='gpl',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
+      package_json={
+          'dependencies': {
+              'bower': '~1.7.0',
+          },
+      },
       namespace_packages=['calmjs'],
       include_package_data=True,
       zip_safe=False,
@@ -33,5 +38,14 @@ setup(name='calmjs.bower',
       ],
       entry_points="""
       # -*- Entry points: -*-
+      [distutils.commands]
+      bower = calmjs.bower:bower
+
+      [distutils.setup_keywords]
+      bower_json = calmjs.dist:validate_json_field
+
+      [egg_info.writers]
+      bower.json = calmjs.bower:write_bower_json
       """,
+      test_suite="calmjs.bower.tests.make_suite",
       )

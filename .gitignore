@@ -13,3 +13,5 @@ lib/
 node_modules/
 .env
 package.json
+bower.json
+bower_components
