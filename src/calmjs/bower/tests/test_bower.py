@@ -13,14 +13,17 @@ from setuptools.dist import Distribution
 from pkg_resources import WorkingSet
 
 from calmjs import cli
+from calmjs import npm
+from calmjs.bower import Driver
 
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
-from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_dist_flatten_package_json
+from calmjs.testing.utils import stub_mod_call
+from calmjs.testing.utils import stub_mod_check_interactive
+from calmjs.testing.utils import stub_os_environ
 from calmjs.testing.utils import stub_stdin
 from calmjs.testing.utils import stub_stdouts
-from calmjs.testing.utils import stub_mod_check_interactive
 
 
 class DistCommandTestCase(unittest.TestCase):
@@ -286,3 +289,30 @@ class DistCommandTestCase(unittest.TestCase):
         self.assertFalse(exists(join(tmpdir, 'bower.json')))
         # Ensure that install is NOT called.
         self.assertIsNone(self.call_args)
+
+
+@unittest.skipIf(npm.get_npm_version() is None, 'npm not available')
+class BowerTestCase(unittest.TestCase):
+    """
+    Test actual integration with node.
+    """
+
+    def setUp(self):
+        self.cwd = os.getcwd()
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+
+    def test_integration(self):
+        """
+        Actually calling the real npm through the calmjs npm_install
+        method on this package and then executing the result.
+        """
+
+        tmpdir = mkdtemp(self)
+        os.chdir(tmpdir)
+        npm.npm_install('calmjs.bower')
+        bower = Driver()
+        bower.set_paths(npm.npm_bin())
+        # should have the actual version declared in package_json
+        self.assertEqual(bower.get_bower_version(), (1, 7, 9))
