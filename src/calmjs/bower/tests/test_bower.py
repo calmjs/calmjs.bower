@@ -12,7 +12,6 @@ from distutils.errors import DistutilsOptionError
 from setuptools.dist import Distribution
 from pkg_resources import WorkingSet
 
-from calmjs import bower
 from calmjs import cli
 
 from calmjs.testing.utils import mkdtemp
@@ -151,6 +150,7 @@ class DistCommandTestCase(unittest.TestCase):
         self.assertEqual(result, {
             'dependencies': {'jquery': '~1.11.0'},
             'devDependencies': {},
+            'name': 'foo',
         })
 
     def test_init_merge(self):
@@ -180,6 +180,7 @@ class DistCommandTestCase(unittest.TestCase):
         self.assertEqual(result, {
             'dependencies': {'jquery': '~1.11.0', 'underscore': '~1.8.0'},
             'devDependencies': {'sinon': '~1.17.0'},
+            'name': 'foo',
         })
 
     def test_init_merge_interactive_default(self):
@@ -235,7 +236,9 @@ class DistCommandTestCase(unittest.TestCase):
             'dependencies': {'jquery': '~1.11.0'},
             'devDependencies': {},
         })
-        self.assertEqual(self.call_args, ((['bower', 'install'],), {}))
+        args, kwargs = self.call_args
+        self.assertEqual(args, (['bower', 'install'],))
+        self.assertIn('PATH', kwargs['env'])
 
     def test_install_no_init_has_bower_json_interactive_default_input(self):
         stub_stdin(self, u'')
