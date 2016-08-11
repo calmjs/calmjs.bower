@@ -14,6 +14,7 @@ from pkg_resources import WorkingSet
 
 from calmjs import cli
 from calmjs import npm
+from calmjs import bower
 from calmjs.bower import Driver
 
 from calmjs.testing.utils import mkdtemp
@@ -21,6 +22,7 @@ from calmjs.testing.utils import make_dummy_dist
 from calmjs.testing.utils import stub_dist_flatten_package_json
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
+from calmjs.testing.utils import stub_os_environ
 from calmjs.testing.utils import stub_stdin
 from calmjs.testing.utils import stub_stdouts
 
@@ -314,3 +316,16 @@ class BowerTestCase(unittest.TestCase):
         self.assertTrue(exists(join(npm.npm_bin(), 'bower')))
         # should have the actual version declared in package_json
         self.assertEqual(bower.get_bower_version(), (1, 7, 9))
+
+    def test_default_driver(self):
+        stub_os_environ(self)
+        tmpdir = mkdtemp(self)
+        os.chdir(tmpdir)
+        fake_node = join(tmpdir, 'node_modules')
+        os.makedirs(join(fake_node, '.bin'))
+        fake_bower = join(fake_node, '.bin', 'bower')
+        with open(fake_bower, 'w'):
+            pass
+        os.environ['NODE_PATH'] = fake_node
+        driver = bower._make_default_driver()
+        self.assertIs(driver.get_bower_version(), None)
