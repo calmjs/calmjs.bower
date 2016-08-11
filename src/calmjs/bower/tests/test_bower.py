@@ -21,7 +21,6 @@ from calmjs.testing.utils import make_dummy_dist
 from calmjs.testing.utils import stub_dist_flatten_package_json
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
-from calmjs.testing.utils import stub_os_environ
 from calmjs.testing.utils import stub_stdin
 from calmjs.testing.utils import stub_stdouts
 
@@ -109,11 +108,11 @@ class DistCommandTestCase(unittest.TestCase):
         stdout = sys.stdout.getvalue()
         self.assertTrue(stdout.startswith("running bower\n"))
 
+        target = join(tmpdir, 'bower.json')
+
         self.assertIn(
-            "generating a flattened 'bower.json' for 'foo' "
-            "into current working directory (%s)\n"
-            "Generated 'bower.json' differs from one in current working "
-            "directory" % (tmpdir),
+            "generating a flattened 'bower.json' for 'foo' into '%s'\n"
+            "Generated 'bower.json' differs with '%s'" % (tmpdir, target),
             stdout
         )
 
@@ -126,8 +125,7 @@ class DistCommandTestCase(unittest.TestCase):
         )
 
         self.assertIn(
-            "'bower.json' exists in current working directory; "
-            "not overwriting\n",
+            "Not overwriting existing '%s'\n" % target,
             sys.stderr.getvalue(),
         )
 
@@ -238,10 +236,10 @@ class DistCommandTestCase(unittest.TestCase):
         self.assertEqual(result, {
             'dependencies': {'jquery': '~1.11.0'},
             'devDependencies': {},
+            'name': 'foo',
         })
         args, kwargs = self.call_args
         self.assertEqual(args, (['bower', 'install'],))
-        self.assertIn('PATH', kwargs['env'])
 
     def test_install_no_init_has_bower_json_interactive_default_input(self):
         stub_stdin(self, u'')
@@ -312,7 +310,7 @@ class BowerTestCase(unittest.TestCase):
         tmpdir = mkdtemp(self)
         os.chdir(tmpdir)
         npm.npm_install('calmjs.bower')
-        bower = Driver()
-        bower.set_paths(npm.npm_bin())
+        bower = Driver(env_path=npm.npm_bin())
+        self.assertTrue(exists(join(npm.npm_bin(), 'bower')))
         # should have the actual version declared in package_json
         self.assertEqual(bower.get_bower_version(), (1, 7, 9))
