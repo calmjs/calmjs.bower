@@ -318,25 +318,8 @@ class BowerTestCase(unittest.TestCase):
         tmpdir = mkdtemp(self)
         os.chdir(tmpdir)
         npm.npm_install('calmjs.bower')
-        bower = Driver(env_path=npm.npm_bin())
-        self.assertTrue(exists(join(npm.npm_bin(), 'bower')))
+        # Use the version that will set the environment.
+        bower = Driver.create()
+        self.assertTrue(exists(join(tmpdir, 'node_modules', '.bin', 'bower')))
         # should have the actual version declared in package_json
         self.assertEqual(bower.get_bower_version(), (1, 7, 9))
-
-    def test_default_driver(self):
-        stub_os_environ(self)
-        tmpdir = mkdtemp(self)
-        os.chdir(tmpdir)
-        fake_node = join(tmpdir, 'node_modules')
-        os.makedirs(join(fake_node, '.bin'))
-        fake_bower = join(fake_node, '.bin', 'bower')
-        with open(fake_bower, 'w'):
-            pass
-        os.environ['NODE_PATH'] = fake_node
-
-        # This will trigger a warning, silence it from stderr.
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            driver = bower._make_default_driver()
-
-        self.assertIs(driver.get_bower_version(), None)
