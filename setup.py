@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 
 version = '0.0'
 
@@ -24,7 +23,7 @@ setup(name='calmjs.bower',
       url='https://github.com/calmjs/calmjs.bower',
       license='gpl',
       packages=find_packages('src'),
-      package_dir = {'': 'src'},
+      package_dir={'': 'src'},
       package_json={
           'dependencies': {
               'bower': '~1.7.0',

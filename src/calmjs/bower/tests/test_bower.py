@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import warnings
 import unittest
 import json
 import os
@@ -14,8 +15,13 @@ from pkg_resources import WorkingSet
 
 from calmjs import cli
 from calmjs import npm
-from calmjs import bower
-from calmjs.bower import Driver
+
+# suppressing warning as tests should be run within a context with no
+# immediate availability of node_modules and/or bower
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    from calmjs import bower
+    from calmjs.bower import Driver
 
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
@@ -327,5 +333,10 @@ class BowerTestCase(unittest.TestCase):
         with open(fake_bower, 'w'):
             pass
         os.environ['NODE_PATH'] = fake_node
-        driver = bower._make_default_driver()
+
+        # This will trigger a warning, silence it from stderr.
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            driver = bower._make_default_driver()
+
         self.assertIs(driver.get_bower_version(), None)

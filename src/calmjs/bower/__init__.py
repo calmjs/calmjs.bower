@@ -6,7 +6,7 @@ Provides some helper functions that deal with bower.json
 """
 
 from functools import partial
-import logging
+import warnings
 import os
 from os.path import join
 from os.path import exists
@@ -18,8 +18,6 @@ from calmjs.command import GenericPackageManagerCommand
 BOWER_FIELD = 'bower_json'
 BOWER_JSON = 'bower.json'
 BOWER = 'bower'
-
-logger = logging.getLogger(__name__)
 
 
 class Driver(cli.PackageManagerDriver):
@@ -42,15 +40,19 @@ def _make_default_driver():
 
     if inst.get_bower_version() is None:
         inst.env_path = None
-        logger.warning(
-            "'bower' binary not found; default driver instance will not work. "
-            "please either define update os.environ['PATH'] to include the "
-            "location of that binary, specify os.environ['NODE_PATH'] to the "
-            "desired local node_module directory, or have npm install bower "
-            "into this current working directory (%s), either through npm or "
-            "through calmjs. Once that is done, reload this module. "
-            "Alternatively, create a manual bower Driver instance.",
-            os.getcwd(),
+        warnings.warn(
+            "'bower' binary not found; default module level functions will "
+            "not work. Please either provide PATH and/or update "
+            "os.environ['PATH'] to include one that provides, specify "
+            "os.environ['NODE_PATH'] to the node_modules directory that has "
+            "bower installed, or have npm install bower into the current "
+            "working directory (%s) either directly through npm or using the "
+            "calmjs framework. Once that is done, reload this module. "
+            "Alternatively, create a manual bower Driver instance with "
+            "manually defined arguments to required locations." % (
+                os.getcwd(),
+            ),
+            RuntimeWarning,
         )
 
     return inst
