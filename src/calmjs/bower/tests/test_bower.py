@@ -25,7 +25,7 @@ with warnings.catch_warnings():
 
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
-from calmjs.testing.utils import stub_dist_flatten_package_json
+from calmjs.testing.utils import stub_dist_flatten_egginfo_json
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
 from calmjs.testing.utils import stub_os_environ
@@ -51,9 +51,9 @@ class DistCommandTestCase(unittest.TestCase):
         working_set = WorkingSet()
         working_set.add(app, self._calmjs_testing_tmpdir)
 
-        # Stub out the flatten_package_json calls with one that uses our
+        # Stub out the flatten_egginfo_json calls with one that uses our
         # custom working_set here.
-        stub_dist_flatten_package_json(self, [cli], working_set)
+        stub_dist_flatten_egginfo_json(self, [cli], working_set)
         # Quiet stdout from distutils logs
         stub_stdouts(self)
         # Force auto-detected interactive mode to True, because this is
