@@ -37,6 +37,9 @@ setup(name='calmjs.bower',
       ],
       entry_points="""
       # -*- Entry points: -*-
+      [calmjs.extras_keys]
+      bower_components = enabled
+
       [distutils.commands]
       bower = calmjs.bower:bower
 

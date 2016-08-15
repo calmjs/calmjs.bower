@@ -14,6 +14,7 @@ from setuptools.dist import Distribution
 from pkg_resources import WorkingSet
 
 from calmjs import cli
+from calmjs import dist
 from calmjs import npm
 
 # suppressing warning as tests should be run within a context with no
@@ -295,6 +296,55 @@ class DistCommandTestCase(unittest.TestCase):
         self.assertFalse(exists(join(tmpdir, 'bower.json')))
         # Ensure that install is NOT called.
         self.assertIsNone(self.call_args)
+
+    # While it really is for node/npm, the declaration is almost generic
+    # enough that the particular method should be used here.
+    def test_node_modules_registry_flattening(self):
+        lib = make_dummy_dist(self, (
+            ('requires.txt', '\n'.join([])),
+            ('bower.json', json.dumps({
+                'dependencies': {
+                    'jquery': '~1.8.3',
+                    'underscore': '1.8.3',
+                },
+            })),
+            ('extras_calmjs.json', json.dumps({
+                'bower_components': {
+                    'jquery': 'jquery/dist/jquery.js',
+                    'underscore': 'underscore/underscore-min.js',
+                },
+                'something_else': {'parent': 'lib'},
+            })),
+        ), 'lib', '1.0.0')
+
+        app = make_dummy_dist(self, (
+            ('requires.txt', '\n'.join([
+                'lib>=1.0.0',
+            ])),
+            ('bower.json', json.dumps({
+                'dependencies': {
+                    'jquery': '~3.0.0',
+                },
+            })),
+            ('extras_calmjs.json', json.dumps({
+                'bower_components': {
+                    'jquery': 'jquery/dist/jquery.min.js',
+                },
+                'something_else': {'child': 'named'},
+            })),
+        ), 'app', '2.0')
+
+        working_set = WorkingSet()
+        working_set.add(lib, self._calmjs_testing_tmpdir)
+        working_set.add(app, self._calmjs_testing_tmpdir)
+
+        results = dist.flatten_extras('app', working_set=working_set)
+        self.assertEqual(results['bower_components'], {
+            'jquery': 'jquery/dist/jquery.min.js',
+            'underscore': 'underscore/underscore-min.js',
+        })
+        # child takes precedences as this was not specified to be merged
+        self.assertEqual(results['something_else'], {'child': 'named'})
 
 
 @unittest.skipIf(npm.get_npm_version() is None, 'npm not available')
