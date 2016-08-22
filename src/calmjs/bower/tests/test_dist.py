@@ -58,7 +58,7 @@ class DistTestCase(unittest.TestCase):
         working_set.add(lib, self._calmjs_testing_tmpdir)
         working_set.add(app, self._calmjs_testing_tmpdir)
 
-        results = dist.flatten_extras_calmjs('app', working_set=working_set)
+        results = dist.flatten_extras_calmjs(['app'], working_set=working_set)
         self.assertEqual(results['bower_components'], {
             'jquery': 'jquery/dist/jquery.min.js',
             'underscore': 'underscore/underscore-min.js',
