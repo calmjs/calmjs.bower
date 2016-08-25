@@ -9,7 +9,6 @@ import sys
 from os.path import join
 from os.path import exists
 
-from distutils.errors import DistutilsOptionError
 from setuptools.dist import Distribution
 from pkg_resources import WorkingSet
 
@@ -70,8 +69,9 @@ class DistCommandTestCase(unittest.TestCase):
             name='foo',
         ))
         dist.parse_command_line()
-        with self.assertRaises(DistutilsOptionError):
-            dist.run_commands()
+        dist.run_commands()
+        out = sys.stdout.getvalue()
+        self.assertIn('\n        "jquery": "~1.11.0"', out)
 
     def test_interactive_only(self):
         tmpdir = mkdtemp(self)
@@ -82,8 +82,22 @@ class DistCommandTestCase(unittest.TestCase):
             name='foo',
         ))
         dist.parse_command_line()
-        with self.assertRaises(DistutilsOptionError):
-            dist.run_commands()
+        dist.run_commands()
+        out = sys.stdout.getvalue()
+        self.assertIn('\n        "jquery": "~1.11.0"', out)
+
+    def test_view(self):
+        tmpdir = mkdtemp(self)
+        os.chdir(tmpdir)
+        dist = Distribution(dict(
+            script_name='setup.py',
+            script_args=['bower', '--view'],
+            name='foo',
+        ))
+        dist.parse_command_line()
+        dist.run_commands()
+        out = sys.stdout.getvalue()
+        self.assertIn('\n        "jquery": "~1.11.0"', out)
 
     def test_init_no_overwrite_default_input_interactive(self):
         tmpdir = mkdtemp(self)
@@ -117,8 +131,8 @@ class DistCommandTestCase(unittest.TestCase):
         target = join(tmpdir, 'bower.json')
 
         self.assertIn(
-            "generating a flattened 'bower.json' for 'foo' into '%s'\n"
-            "Generated 'bower.json' differs with '%s'" % (tmpdir, target),
+            "generating a flattened 'bower.json' for 'foo'\n"
+            "Generated 'bower.json' differs with '%s'" % (target),
             stdout
         )
 
