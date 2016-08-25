@@ -40,6 +40,9 @@ setup(
         'calmjs.extras_keys': [
             'bower_components = enabled',
         ],
+        'calmjs.runtime': [
+            'bower = calmjs.bower:bower.runtime',
+        ],
         'distutils.commands': [
             'bower = calmjs.bower:bower',
         ],
