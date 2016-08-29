@@ -64,6 +64,13 @@ class IntegrationTestCase(unittest.TestCase):
         })
         return runtime.Runtime(working_set=working_set)
 
+    def test_calmjs_main_runtime_bower_version(self):
+        stub_stdouts(self)
+        with self.assertRaises(SystemExit) as e:
+            runtime.main(['bower', '-V'])
+        # reports both versions.
+        self.assertIn('calmjs.bower', sys.stdout.getvalue())
+
     def test_bower_init_integration(self):
         remember_cwd(self)
         tmpdir = mkdtemp(self)
