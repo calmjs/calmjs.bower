@@ -4,12 +4,10 @@ import json
 import sys
 import textwrap
 from os.path import join
-from subprocess import Popen
-from subprocess import PIPE
 from pkg_resources import WorkingSet
 
 from calmjs import dist
-from calmjs.cli import locale
+from calmjs.utils import fork_exec
 
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
@@ -117,12 +115,8 @@ class DistIntegrationTestCase(unittest.TestCase):
         """
 
         # naturally, run it like we mean it.
-        p = Popen(
-            [sys.executable, 'setup.py', 'egg_info'], stdout=PIPE, stderr=PIPE,
-            cwd=self.pkg_root,
-        )
-        stdout, stderr = p.communicate()
-        stdout = stdout.decode(locale)
+        stdout, stderr = fork_exec(
+            [sys.executable, 'setup.py', 'egg_info'], cwd=self.pkg_root,)
         self.assertIn('writing bower_json', stdout)
         self.assertIn('writing extras_calmjs', stdout)
 

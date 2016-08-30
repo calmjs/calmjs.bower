@@ -35,7 +35,10 @@ class bower(PackageManagerCommand):
 
     # modules globals will be populated with friendly exported names.
     cli_driver = Driver.create_for_module_vars(globals())
-    runtime = PackageManagerRuntime(cli_driver)
+    runtime = PackageManagerRuntime(
+        cli_driver, package_name='calmjs.bower',
+        description='bower support for the calmjs framework',
+    )
     description = cli_driver.description
 
 bower._initialize_user_options()

@@ -14,6 +14,7 @@ from pkg_resources import WorkingSet
 
 from calmjs import cli
 from calmjs import npm
+from calmjs.utils import fork_exec
 
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
@@ -28,6 +29,7 @@ from calmjs.testing.utils import stub_stdouts
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from calmjs.bower import Driver
+    from calmjs.bower import bower as global_bower
 
 
 class DistCommandTestCase(unittest.TestCase):
@@ -145,7 +147,7 @@ class DistCommandTestCase(unittest.TestCase):
         )
 
         self.assertIn(
-            "Not overwriting existing '%s'\n" % target,
+            "not overwriting existing '%s'\n" % target,
             sys.stderr.getvalue(),
         )
 
@@ -335,3 +337,39 @@ class BowerTestCase(unittest.TestCase):
         self.assertTrue(exists(join(tmpdir, 'node_modules', '.bin', 'bower')))
         # should have the actual version declared in package_json
         self.assertEqual(bower.get_bower_version(), (1, 7, 9))
+
+
+class BowerRuntimeTestCase(unittest.TestCase):
+
+    def test_standalone_main(self):
+        stub_stdouts(self)
+        with self.assertRaises(SystemExit):
+            global_bower.runtime(['-h'])
+        # Have the help work
+        self.assertIn('bower support for the calmjs', sys.stdout.getvalue())
+
+    def test_standalone_main_version(self):
+        stub_stdouts(self)
+        # the default call method does NOT call sys.exit.
+        with self.assertRaises(SystemExit):
+            global_bower.runtime(['-V'])
+        self.assertIn('calmjs.bower', sys.stdout.getvalue())
+        self.assertIn('from', sys.stdout.getvalue())
+
+    def test_standalone_reuse_main(self):
+        stub_stdouts(self)
+        # the default call method does NOT call sys.exit.
+        global_bower.runtime(['calmjs', '-vv'])
+        # Have the help work
+        result = json.loads(sys.stdout.getvalue())
+        self.assertEqual(result['dependencies'], {})
+        err = sys.stderr.getvalue()
+        self.assertIn('DEBUG', err)
+
+    def test_standalone_subprocess(self):
+        # Invoke __main__
+        stdout, stderr = fork_exec(
+            [sys.executable, '-m', 'calmjs.bower', 'calmjs.bower', '-vv'])
+        result = json.loads(stdout)
+        self.assertEqual(result['dependencies'], {})
+        self.assertIn('DEBUG', stderr)

@@ -66,7 +66,7 @@ class IntegrationTestCase(unittest.TestCase):
 
     def test_calmjs_main_runtime_bower_version(self):
         stub_stdouts(self)
-        with self.assertRaises(SystemExit) as e:
+        with self.assertRaises(SystemExit):
             runtime.main(['bower', '-V'])
         # reports both versions.
         self.assertIn('calmjs.bower', sys.stdout.getvalue())
