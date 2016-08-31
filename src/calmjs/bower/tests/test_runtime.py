@@ -8,13 +8,14 @@ from os.path import join
 import pkg_resources
 
 from calmjs import cli
+from calmjs import dist
 from calmjs import runtime
 
 from calmjs.testing import mocks
 from calmjs.testing.utils import make_dummy_dist
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import remember_cwd
-from calmjs.testing.utils import stub_dist_flatten_egginfo_json
+from calmjs.testing.utils import stub_item_attr_value
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
 from calmjs.testing.utils import stub_stdouts
@@ -52,7 +53,7 @@ class IntegrationTestCase(unittest.TestCase):
 
         # Stub out the underlying data needed for the cli for the tests
         # to test against our custom data for reproducibility.
-        stub_dist_flatten_egginfo_json(self, [cli], working_set)
+        stub_item_attr_value(self, dist, 'default_working_set', working_set)
         stub_mod_check_interactive(self, [cli], True)
 
         # Of course, apply a mock working set for the runtime instance
