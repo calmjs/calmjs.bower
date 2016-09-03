@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.0'
+version = '1.0.0'
 
 long_description = (
     open('README.rst').read()
@@ -8,16 +8,28 @@ long_description = (
     open('CHANGES.rst').read()
     + '\n')
 
+classifiers = """
+Development Status :: 5 - Production/Stable
+Environment :: Console
+Framework :: Setuptools Plugin
+Intended Audience :: Developers
+License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)
+Operating System :: OS Independent
+Programming Language :: JavaScript
+Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3.3
+Programming Language :: Python :: 3.4
+Programming Language :: Python :: 3.5
+""".strip().splitlines()
+
 setup(
     name='calmjs.bower',
     version=version,
-    description="Bower support through calmjs.",
+    description="Bower support for the calmjs framework.",
     long_description=long_description,
     # Get more strings from
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    classifiers=[
-      "Programming Language :: Python",
-      ],
+    classifiers=classifiers,
     keywords='',
     author='Tommy Yu',
     author_email='tommy.yu@auckland.ac.nz',
@@ -34,7 +46,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'calmjs',
+        'calmjs>=1.0.2',
     ],
     entry_points={
         'calmjs.extras_keys': [

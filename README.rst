@@ -88,7 +88,7 @@ in JSON string much like ``bower_json``, like so:
     )
 
 Since ``bower_components`` is declared to be an ``extras_key``,
-conflicits with existing declarations in other packages within the
+conflicts with existing declarations in other packages within the
 environment will be merged like how dependencies sections declared in
 ``bower_json``.
 
@@ -101,7 +101,11 @@ conventions that standard Node.js tools might expect (i.e. where the
 ``.js`` filename suffix is omitted).
 
 As of now, the support of ``.bowerrc`` configuration settings is not
-currently implemented.
+currently implemented, so behavior of usage of ``bower`` through calmjs
+will not account for locations that may be specified in that file.  For
+the standard use case where dependencies are installed to some separate
+directory as part of a typical ``calmjs`` workflow it should not pose a
+problem.
 
 Command line utility
 ~~~~~~~~~~~~~~~~~~~~
@@ -119,7 +123,7 @@ result in something like this:
 .. code:: sh
 
     $ calmjs
-    usage: calmjs [-h] [-v] [-q] [-d] <command> ...
+    usage: calmjs [-h] [-d] [-q] [-v] [-V] <command> ...
 
     positional arguments:
       <command>

@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0-dev (unreleased)
---------------------
+1.0.0 (2016-09-04)
+------------------
 
 - Provide bower support through calmjs framework.
