@@ -20,6 +20,7 @@ from calmjs.utils import fork_exec
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import make_dummy_dist
 from calmjs.testing.utils import stub_item_attr_value
+from calmjs.testing.utils import stub_base_which
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
 from calmjs.testing.utils import stub_stdin
@@ -240,6 +241,9 @@ class DistCommandTestCase(unittest.TestCase):
 
     def test_install_no_init(self):
         stub_mod_call(self, cli)
+        # fake the which bower since for this test we will not have that
+        # installed.
+        stub_base_which(self, 'bower')
         tmpdir = mkdtemp(self)
         os.chdir(tmpdir)
         dist = Distribution(dict(

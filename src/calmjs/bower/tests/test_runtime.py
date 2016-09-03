@@ -10,15 +10,19 @@ import pkg_resources
 from calmjs import cli
 from calmjs import dist
 from calmjs import runtime
+from calmjs.utils import which
 
 from calmjs.testing import mocks
 from calmjs.testing.utils import make_dummy_dist
 from calmjs.testing.utils import mkdtemp
 from calmjs.testing.utils import remember_cwd
+from calmjs.testing.utils import stub_base_which
 from calmjs.testing.utils import stub_item_attr_value
 from calmjs.testing.utils import stub_mod_call
 from calmjs.testing.utils import stub_mod_check_interactive
 from calmjs.testing.utils import stub_stdouts
+
+which_bower = which('bower')
 
 
 class IntegrationTestCase(unittest.TestCase):
@@ -90,6 +94,7 @@ class IntegrationTestCase(unittest.TestCase):
         tmpdir = mkdtemp(self)
         os.chdir(tmpdir)
         stub_mod_call(self, cli)
+        stub_base_which(self, which_bower)
         rt = self.setup_runtime()
         rt(['bower', '--install', 'example.package1', 'example.package2'])
 
@@ -125,6 +130,7 @@ class IntegrationTestCase(unittest.TestCase):
         os.chdir(tmpdir)
         stub_stdouts(self)
         stub_mod_call(self, cli)
+        stub_base_which(self, which_bower)
         rt = self.setup_runtime()
         rt(['bower', '--install', '--view', '--init',
             'example.package1', 'example.package2'])
