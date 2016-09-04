@@ -43,10 +43,13 @@ before_install:
 
 install:
   - pip install nose coverage flake8
+  # must be installed first, as this writes package_json into egg-info
+  - pip install calmjs
   - python setup.py develop
 script:
   - flake8 setup.py src
   - nosetests --with-coverage --cover-package=calmjs.bower --with-doctest
+  - coverage report -m
 # Alternatively without nose
 #  - coverage run --include=src/* -m unittest calmjs.bower.tests.make_suite
 #  - coverage report -m
