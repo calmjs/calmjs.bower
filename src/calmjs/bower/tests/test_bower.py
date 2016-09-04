@@ -34,6 +34,36 @@ with warnings.catch_warnings():
     from calmjs.bower import bower as global_bower
 
 
+def check_simple_namespace():
+    """
+    In Python < 3.3, namespace packages are not a thing so under many
+    circumstances even with pkg_resources available, calmjs.bower will
+    remain non-importable until calmjs is imported as a namespace (maybe
+    even need at least a module from the real one as is the case with
+    PyPy).  This will mean direction execution of the module will not be
+    possible for those platforms, which will cause the standalone test
+    to fail.  As this is not a standard way to execute calmjs.bower, the
+    test will only run if calmjs.bower can be imported like so.
+
+    The other way this can fail is due to mix of installation options
+    between calmjs packages; if calmjs was installed as a wheel, with
+    calmjs.bower installed as setup.py develop, the namespace resolution
+    at the default level becomes broken.  If both are installed as a
+    wheel or as development mode then it will work.
+
+    The rest of the tests naturally test the standard execution methods
+    and other parts of the code.
+    """
+
+    stdout, stderr = fork_exec([
+        sys.executable, '-c',
+        'from calmjs import bower; print(bower.__name__)',
+    ])
+    return stdout.strip() == 'calmjs.bower'
+
+namespace_available = check_simple_namespace()
+
+
 class DistCommandTestCase(unittest.TestCase):
     """
     Test case for the commands within.
@@ -370,10 +400,23 @@ class BowerRuntimeTestCase(unittest.TestCase):
         err = sys.stderr.getvalue()
         self.assertIn('DEBUG', err)
 
-    def test_standalone_subprocess(self):
+    # The very special snowflake test that shows how Python namespaces
+    # can basically not work if different packages are installed using
+    # different installation methods (i.e. mixing methods between egg,
+    # wheel, development, or others).  Naturally don't coverage report
+    # this.
+    @unittest.skipIf(
+        not namespace_available, 'namespace module unavailable by default')
+    def test_standalone_subprocess(self):  # pragma: no cover
         # Invoke __main__
         stdout, stderr = fork_exec(
             [sys.executable, '-m', 'calmjs.bower', 'calmjs.bower', '-vv'])
+        result = json.loads(stdout)
+        self.assertEqual(result['dependencies'], {})
+        self.assertIn('DEBUG', stderr)
+
+    def test_direct_invocation_acceptance(self):
+        stdout, stderr = fork_exec(['calmjs', 'bower', '-vv', 'calmjs.bower'])
         result = json.loads(stdout)
         self.assertEqual(result['dependencies'], {})
         self.assertIn('DEBUG', stderr)
