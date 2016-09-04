@@ -11,6 +11,7 @@ from calmjs import cli
 from calmjs import dist
 from calmjs import runtime
 from calmjs.utils import which
+from calmjs.utils import finalize_env
 
 from calmjs.testing import mocks
 from calmjs.testing.utils import make_dummy_dist
@@ -105,7 +106,11 @@ class IntegrationTestCase(unittest.TestCase):
         self.assertEqual(result['dependencies']['underscore'], '~1.8.3')
         # not foo install, but bower install since entry point specified
         # the actual runtime instance.
-        self.assertEqual(self.call_args, ((['bower', 'install'],), {}))
+        args, kwargs = self.call_args
+        self.assertEqual(args, (['bower', 'install'],))
+        env = kwargs.pop('env', {})
+        self.assertEqual(kwargs, {})
+        self.assertEqual(env, finalize_env(env))
 
     def test_bower_view(self):
         remember_cwd(self)
@@ -145,4 +150,8 @@ class IntegrationTestCase(unittest.TestCase):
 
         self.assertEqual(result['dependencies']['jquery'], '~3.1.0')
         self.assertEqual(result['dependencies']['underscore'], '~1.8.3')
-        self.assertEqual(self.call_args, ((['bower', 'install'],), {}))
+        args, kwargs = self.call_args
+        self.assertEqual(args, (['bower', 'install'],))
+        env = kwargs.pop('env', {})
+        self.assertEqual(kwargs, {})
+        self.assertEqual(env, finalize_env(env))
