@@ -45,15 +45,15 @@ available for this to be realized; if they are not installed please
 follow the installation steps for Node.js appropriate for the running
 environment/platform.
 
-To install |calmjs.bower| into a given Python environment, the following
-command can be executed to install directly from PyPI:
+To install |calmjs.bower| into a given Python environment, it may be
+installed directly from PyPI with the following command:
 
 .. code:: sh
 
     $ pip install calmjs.bower
 
 If a local installation of Bower into the current directory is desired,
-it can be done through |calmjs| like so
+it can be done through |calmjs| with the following command:
 
 .. code:: sh
 
@@ -128,7 +128,7 @@ Testing the installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 To ensure that the |calmjs| installation is functioning correctly, the
-built-in testsuite can be executed by the following:
+built-in testsuite can be executed by the following command:
 
 .. code:: sh
 
@@ -144,8 +144,34 @@ information related to the issue at hand.
 Usage
 -----
 
-Much of the following is copied from the documentation relating the the
-support of |npm| within |calmjs|, though modified for |bower|.
+The |calmjs.bower| package will install the appropriate hooks into the
+|calmjs| console entry point and also |setuptools| to facilitate the
+generation of ``bower.json`` from the ``bower_json`` declarations in the
+current package or other packages installed in the current environment.
+
+If no packages with conflicting declarations are installed, with the
+|bower| binary available through the ``PATH`` environment variable (or
+in the current directory's ``node_modules``), running the utility will
+result in something like this:
+
+.. code:: sh
+
+    $ calmjs
+    usage: calmjs [-h] [-d] [-q] [-v] [-V] <command> ...
+
+    positional arguments:
+      <command>
+        npm          npm compatibility helper
+        bower        bower compatibility helper
+
+If |bower| was not available, a warning will also be displayed,
+however this should only affect operations that need the binary itself.
+As for details with usage, please invoke ``calmjs bower --help``.
+
+The following help outlines typical usage of |bower| with declarations
+by supporting Python packages through |calmjs|, so much of the help is
+copied and shared from that package, modified from its support for
+|npm|.
 
 Declare a ``bower.json`` for a given Python package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -224,33 +250,6 @@ the standard use case where dependencies are installed to some separate
 directory as part of a typical |calmjs| workflow it should not pose a
 problem.
 
-Command line utility
-~~~~~~~~~~~~~~~~~~~~
-
-The |calmjs.bower| package will install the appropriate hooks into the
-|calmjs| console entry point and also |setuptools| to facilitate the
-generation of ``bower.json`` from the ``bower_json`` declarations in the
-current package or other packages installed in the current environment.
-
-If no packages with conflicting declarations are installed, with the
-|bower| binary available through the ``PATH`` environment variable (or
-in the current directory's ``node_modules``), running the utility will
-result in something like this:
-
-.. code:: sh
-
-    $ calmjs
-    usage: calmjs [-h] [-d] [-q] [-v] [-V] <command> ...
-
-    positional arguments:
-      <command>
-        npm          npm compatibility helper
-        bower        bower compatibility helper
-
-If |bower| was not available, a warning will also be displayed,
-however this should only affect operations that need the binary itself.
-As for details with usage, please invoke ``calmjs bower --help``.
-
 
 Troubleshooting
 ---------------
@@ -278,8 +277,8 @@ Contribute
 - Source Code: https://github.com/calmjs/calmjs.bower
 
 
-License
--------
+Legal
+-----
 
 The |calmjs.bower| package is part of the calmjs project.
 
