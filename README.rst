@@ -3,10 +3,10 @@ calmjs.bower
 
 `Bower`_ support for the `calmjs`_ framework.
 
-.. image:: https://travis-ci.org/calmjs/calmjs.bower.svg?branch=master
+.. image:: https://travis-ci.org/calmjs/calmjs.bower.svg?branch=1.0.x
     :target: https://travis-ci.org/calmjs/calmjs.bower
-.. image:: https://coveralls.io/repos/github/calmjs/calmjs.bower/badge.svg?branch=master
-    :target: https://coveralls.io/github/calmjs/calmjs.bower?branch=master
+.. image:: https://coveralls.io/repos/github/calmjs/calmjs.bower/badge.svg?branch=1.0.x
+    :target: https://coveralls.io/github/calmjs/calmjs.bower?branch=1.0.x
 
 
 Introduction
