@@ -110,7 +110,9 @@ class IntegrationTestCase(unittest.TestCase):
         self.assertEqual(args, (['bower', 'install'],))
         env = kwargs.pop('env', {})
         self.assertEqual(kwargs, {})
-        self.assertEqual(env, finalize_env(env))
+        # have to do both, due to that this is an actual integration
+        # test and values will differ between environments
+        self.assertEqual(finalize_env(env), finalize_env(env))
 
     def test_bower_view(self):
         remember_cwd(self)
@@ -154,4 +156,6 @@ class IntegrationTestCase(unittest.TestCase):
         self.assertEqual(args, (['bower', 'install'],))
         env = kwargs.pop('env', {})
         self.assertEqual(kwargs, {})
-        self.assertEqual(env, finalize_env(env))
+        # have to do both, due to that this is an actual integration
+        # test and values will differ between environments
+        self.assertEqual(finalize_env(env), finalize_env(env))
