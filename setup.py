@@ -46,7 +46,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'calmjs>=1.0.2',
+        'calmjs>=1.0.3',
     ],
     entry_points={
         'calmjs.extras_keys': [

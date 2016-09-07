@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.1 (Unreleased)
+------------------
+
+- Introduced CI on Windows via appveyor and a number of issues specific
+  to Python 2.7 on Windows have been fixed here and in both upstream.
+
 1.0.0 (2016-09-04)
 ------------------
 
