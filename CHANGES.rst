@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.1 (Unreleased)
+1.0.1 (2016-09-07)
 ------------------
 
 - Introduced CI on Windows via appveyor and a number of issues specific
