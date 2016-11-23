@@ -61,6 +61,7 @@ def check_simple_namespace():
     ])
     return stdout.strip() == 'calmjs.bower'
 
+
 namespace_available = check_simple_namespace()
 
 
