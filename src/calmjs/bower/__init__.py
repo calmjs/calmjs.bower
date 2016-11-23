@@ -41,4 +41,5 @@ class bower(PackageManagerCommand):
     )
     description = cli_driver.description
 
+
 bower._initialize_user_options()
