@@ -39,7 +39,7 @@ setup(
     package_dir={'': 'src'},
     package_json={
         'dependencies': {
-            'bower': '~1.7.0',
+            'bower': '~1.8.0',
         },
     },
     namespace_packages=['calmjs'],

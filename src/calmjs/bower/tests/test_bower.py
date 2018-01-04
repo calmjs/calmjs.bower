@@ -371,7 +371,7 @@ class BowerTestCase(unittest.TestCase):
         bower = Driver.create()
         self.assertTrue(exists(join(tmpdir, 'node_modules', '.bin', 'bower')))
         # should have the actual version declared in package_json
-        self.assertEqual(bower.get_bower_version(), (1, 7, 9))
+        self.assertEqual(bower.get_bower_version()[:2], (1, 8))
 
 
 class BowerRuntimeTestCase(unittest.TestCase):
